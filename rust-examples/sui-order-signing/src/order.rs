@@ -55,24 +55,24 @@ pub struct OrderCancellationJSONRequest {
 /**
  * Converts decimal to BCS encoding
  */
-pub fn decimal_to_bcs(num: u64) -> Vec<u8>{
-    let mut bcs_bytes: Vec<u8> = Vec::new();
-    let mut temp_num = num;
-    while temp_num > 0{
-        let mut bcs_byte = temp_num & 0x7F;
+// pub fn decimal_to_bcs(num: u64) -> Vec<u8>{
+//     let mut bcs_bytes: Vec<u8> = Vec::new();
+//     let mut temp_num = num;
+//     while temp_num > 0{
+//         let mut bcs_byte = temp_num & 0x7F;
 
-        if temp_num > 0x7F{
-            bcs_byte |= 0x80;
-        }
-        bcs_bytes.push(bcs_byte as u8);
-        bcs_bytes.push(bcs_byte);
+//         if temp_num > 0x7F{
+//             bcs_byte |= 0x80;
+//         }
+//         bcs_bytes.push(bcs_byte as u8);
+//         bcs_bytes.push(bcs_byte);
 
-        temp_num >>= 7;
+//         temp_num >>= 7;
 
-    }
+//     }
 
-    return bcs_bytes;
-}
+//     return bcs_bytes;
+// }
 
 
 /**
@@ -121,33 +121,33 @@ pub async fn post_cancel_order(order_cancel: OrderCancellationJSONRequest, jwt_t
     return res.to_string();
 }
 
-/**
- * Given an order hash, returns a cancel order hash
- */
-pub fn create_signed_cancel_order(order_hash : &str) -> blake2b_simd::Hash{
-    let order_hashes = vec![order_hash];
-    let hash = create_signed_cancel_orders(order_hashes);
-    return hash;
-}
+// /**
+//  * Given an order hash, returns a cancel order hash
+//  */
+// pub fn create_signed_cancel_order(order_hash : &str) -> blake2b_simd::Hash{
+//     let order_hashes = vec![order_hash];
+//     let hash = create_signed_cancel_orders(order_hashes);
+//     return hash;
+// }
 
-/**
- * Given an Vec of order hashes, returns a cancel order hash
- */
-pub fn create_signed_cancel_orders(order_hashes : Vec<&str>) -> blake2b_simd::Hash{
-    let msg = json!({ "orderHashes": order_hashes }).to_string();
-    let mut intent = vec![3, 0, 0];
-    let mut bcs =  decimal_to_bcs(msg.len() as u64);
-    intent.append(&mut bcs);
-    intent.extend_from_slice(msg.as_bytes());
-    // println!("Intent: {:?}", intent);
+// /**
+//  * Given an Vec of order hashes, returns a cancel order hash
+//  */
+// pub fn create_signed_cancel_orders(order_hashes : Vec<&str>) -> blake2b_simd::Hash{
+//     let msg = json!({ "orderHashes": order_hashes }).to_string();
+//     let mut intent = vec![3, 0, 0];
+//     let mut bcs =  decimal_to_bcs(msg.len() as u64);
+//     intent.append(&mut bcs);
+//     intent.extend_from_slice(msg.as_bytes());
+//     // println!("Intent: {:?}", intent);
 
-    let hash = Params::new()
-        .hash_length(32)
-        .to_state()
-        .update(&intent)
-        .finalize();
-    return hash;
-}
+//     let hash = Params::new()
+//         .hash_length(32)
+//         .to_state()
+//         .update(&intent)
+//         .finalize();
+//     return hash;
+// }
 
 
 /**
