@@ -65,7 +65,6 @@ pub fn decimal_to_bcs(num: u64) -> Vec<u8>{
             bcs_byte |= 0x80;
         }
         bcs_bytes.push(bcs_byte as u8);
-        bcs_bytes.push(bcs_byte);
 
         temp_num >>= 7;
 
